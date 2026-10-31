@@ -84,17 +84,35 @@ class FrankfurterProvider(RateProvider):
 
 
 class AllRatesTodayProvider(RateProvider):
+    """ The latest table published by a central bank, from the keyless feed of AllRatesToday (120 central banks,
+    among them the ECB, RBI, SAMA, CBUAE, Bank of Korea, RBNZ, Bangladesh Bank). The bank is chosen in the settings;
+    the ECB by default. Dated and historical tables need a key and are not used. """
     code = 'allratestoday'
     name = 'AllRatesToday'
-    # the keyless feed of the ECB reference rates, rebased by the server; dated rates need a key and are not used
-    url = 'https://allratestoday.com/api/open/latest/EUR'
+    url = 'https://allratestoday.com/api/open/central-bank/%s'
+    default_bank = 'ecb'
 
     def fetch(self):
-        data = self._get_json(self.url)
-        if data.get('result') != 'success' or not isinstance(data.get('rates'), dict):
+        bank = (self.company.rate_allratestoday_bank or self.default_bank).strip().lower()
+        data = self._get_json(self.url % bank)
+        rows = data.get('rates') if isinstance(data, dict) else None
+        if not isinstance(rows, list) or not rows:
             raise UserError(self.company.env._('%(provider)s refused the request: %(message)s', provider=self.name,
-                              message=data.get('message') or data.get('error-type') or data))
-        return datetime.strptime(data['date'], '%Y-%m-%d').date(), data['base_code'], data['rates']
+                              message=isinstance(data, dict) and data.get('error') or data))
+        # banks publish several kinds of rates (reference, buy/sell, monthly averages): keep the reference one
+        types = [row.get('type') for row in rows]
+        kind = 'reference' if 'reference' in types else max(set(types), key=types.count)
+        rows = [row for row in rows if row.get('type') == kind]
+        # a table is either "1 FOREIGN = x HOME" or "1 HOME = x FOREIGN": the home currency is on every row
+        codes = [row['base'] for row in rows] + [row['quote'] for row in rows]
+        home = max(set(codes), key=codes.count)
+        rates = {home: 1.0}
+        for row in rows:
+            if row['quote'] == home and row['value']:
+                rates[row['base']] = 1 / row['value']
+            elif row['base'] == home:
+                rates[row['quote']] = row['value']
+        return datetime.strptime(data['rate_date'], '%Y-%m-%d').date(), home, rates
 
 
 class OpenExchangeRatesProvider(RateProvider):

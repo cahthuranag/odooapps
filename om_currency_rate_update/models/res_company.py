@@ -38,6 +38,10 @@ class ResCompany(models.Model):
         help="Gives the rates of the currencies the main source does not quote, or all of them when it fails.")
     rate_openexchangerates_key = fields.Char(string='Open Exchange Rates App ID', groups='base.group_system')
     rate_exchangerate_api_key = fields.Char(string='ExchangeRate-API Key', groups='base.group_system')
+    rate_allratestoday_bank = fields.Char(
+        string='AllRatesToday Central Bank', default='ecb',
+        help="Code of the central bank whose published table is used, for example ecb, rbi, sama, cbuae, bok, rbnz. "
+             "The list is at https://allratestoday.com/api/open/central-banks")
     rate_currency_ids = fields.Many2many(
         'res.currency', 'res_company_rate_currency_rel', 'company_id', 'currency_id', string='Currencies to Update',
         help="Leave empty to update every active currency.")

@@ -8,8 +8,10 @@ daily, weekly or monthly, with a backup source for the currencies the main one d
 Features
 ========
 
-* Five rate sources are supported: Frankfurter, the European Central Bank and AllRatesToday, which need
-  no key and quote about thirty major currencies; Open Exchange Rates, which quotes every currency and needs an
+* Five rate sources are supported: Frankfurter and the European Central Bank, which need no key and
+  quote about thirty major currencies; AllRatesToday, which needs no key either and gives the latest table
+  published by the central bank of your choice (the ECB by default, or the RBI, SAMA, CBUAE, Bank of Korea,
+  RBNZ, Bangladesh Bank and about 110 others); Open Exchange Rates, which quotes every currency and needs an
   App ID from openexchangerates.org; and ExchangeRate-API, which works on its free feed without a key
   and uses your key when you enter one.
 * A second source can be set as backup: it gives the rates of the currencies the main source does not
@@ -62,7 +64,8 @@ Multi-currency must be enabled in Accounting > Configuration > Settings; the Aut
 setting appears in the same place.
 
 Set how often the rates are updated (Manually, Daily, Weekly or Monthly) and the source. Open Exchange
-Rates requires an App ID; ExchangeRate-API accepts an optional key. Optionally set a backup source, the
+Rates requires an App ID; ExchangeRate-API accepts an optional key; AllRatesToday takes the code of the central
+bank to read (``ecb`` by default; the list is at https://allratestoday.com/api/open/central-banks). Optionally set a backup source, the
 currencies to update, the date the rates are saved under, the maximum accepted change and the date of
 the next update.
 

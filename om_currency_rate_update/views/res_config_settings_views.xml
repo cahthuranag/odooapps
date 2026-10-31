@@ -37,6 +37,10 @@
                             <label for="rate_exchangerate_api_key" string="API Key" class="col-lg-4 o_light_label"/>
                             <field name="rate_exchangerate_api_key" password="True" placeholder="Optional"/>
                         </div>
+                        <div class="row" invisible="'allratestoday' not in (rate_provider, rate_fallback_provider)">
+                            <label for="rate_allratestoday_bank" string="Central Bank" class="col-lg-4 o_light_label"/>
+                            <field name="rate_allratestoday_bank" placeholder="ecb"/>
+                        </div>
                         <div class="row">
                             <label for="rate_currency_ids" string="Currencies" class="col-lg-4 o_light_label"/>
                             <field name="rate_currency_ids" widget="many2many_tags" placeholder="All active currencies"
@@ -54,9 +58,14 @@
                             <label for="rate_next_date" string="Next Update" class="col-lg-4 o_light_label"/>
                             <field name="rate_next_date"/>
                         </div>
-                        <div class="text-muted small mt8" invisible="rate_provider not in ('frankfurter', 'ecb', 'allratestoday')">
+                        <div class="text-muted small mt8" invisible="rate_provider not in ('frankfurter', 'ecb')">
                             This source quotes about 30 major currencies, without key. For every currency, choose Open
                             Exchange Rates (App ID from openexchangerates.org) or ExchangeRate-API as source or backup.
+                        </div>
+                        <div class="text-muted small mt8" invisible="rate_provider != 'allratestoday'">
+                            The latest table published by the central bank you name, without key: ecb (about 30
+                            currencies), rbi, sama, cbuae, bok, rbnz, bb and 110 more. The list of codes is at
+                            allratestoday.com/api/open/central-banks.
                         </div>
                         <div class="mt8" invisible="not rate_last_update">
                             <span class="o_light_label">Last update: </span><field name="rate_last_update" class="oe_inline"/>

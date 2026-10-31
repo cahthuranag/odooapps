@@ -11,6 +11,7 @@ class ResConfigSettings(models.TransientModel):
         related='company_id.rate_openexchangerates_key', readonly=False, groups='base.group_system')
     rate_exchangerate_api_key = fields.Char(
         related='company_id.rate_exchangerate_api_key', readonly=False, groups='base.group_system')
+    rate_allratestoday_bank = fields.Char(related='company_id.rate_allratestoday_bank', readonly=False)
     rate_currency_ids = fields.Many2many(related='company_id.rate_currency_ids', readonly=False)
     rate_date_policy = fields.Selection(related='company_id.rate_date_policy', readonly=False)
     rate_max_change = fields.Float(related='company_id.rate_max_change', readonly=False)
